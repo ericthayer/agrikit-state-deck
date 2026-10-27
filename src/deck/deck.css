@@ -874,7 +874,7 @@ html[data-deck] body {
   .deck-agenda,
   .deck-grid--rows-fill { height: auto; grid-auto-rows: auto; }
   .deck-flow { grid-auto-flow: row; }
-  .deck-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .deck-timeline { grid-template-columns: minmax(0, 1fr); }
   .deck-figure__frame,
   .deck-agenda .deck-figure__frame { height: 14rem; }
   .deck-cover__plate { --plate-cols: 2; }
@@ -887,6 +887,34 @@ html[data-deck] body {
   .deck-bleed-rb { margin-bottom: 0; }
   .deck-bar__clock,
   .deck-bar__hint { display: none; }
+}
+@media (max-width: 900px) {
+  .deck-slide {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .deck-grid,
+  .deck-agenda {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .deck-fill,
+  .deck-rows,
+  .deck-agenda,
+  .deck-grid--rows-fill,
+  .deck-stack--fill {
+    height: auto;
+    grid-auto-rows: auto;
+  }
+  .deck-rows,
+  .deck-rows--bottom {
+    grid-template-rows: auto;
+  }
+  .deck-head { margin-bottom: 1.5rem;}
+
+  .deck-code {
+    overflow: auto;
+  }
 }
 
 :fullscreen .deck-bar {

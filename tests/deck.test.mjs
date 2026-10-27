@@ -24,3 +24,9 @@ test('slide 2 agenda items have expanded spacing', () => {
   const agenda = /\.deck-agenda\s*\{([^}]+)\}/.exec(css)?.[1] ?? '';
   assert.match(agenda, /gap:\s*clamp\(1\.75rem,\s*3vw,\s*4rem\)\s*;/);
 });
+
+test('screens under 900px stack slide grids and allow vertical scrolling', () => {
+  const responsive = /@media \(max-width:\s*900px\)\s*\{([\s\S]*?)\n\}\n\n:fullscreen/.exec(css)?.[1] ?? '';
+  assert.match(responsive, /\.deck-slide\s*\{[^}]*overflow-y:\s*auto\s*;/);
+  assert.match(responsive, /\.deck-grid,\s*\.deck-agenda\s*\{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/);
+});
