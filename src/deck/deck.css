@@ -1,0 +1,911 @@
+/* Deck: full-viewport slide layer on top of the template's tokens and tpl- components.
+   Swiss pass: one family (Inter), a large type scale, heavy rules above blocks instead of
+   outlined boxes, flat fields of CoBank blue and green, artwork that bleeds off the edge.
+   Agrikit recolor is scoped to html[data-deck] so the concept pages stay untouched.
+   Sized for a 1920×1080 Teams share; type scales with the smaller viewport side.
+   Contrast (checked): ink 16.3:1 / Lc 98, muted 5.7:1 / Lc 75, white on blue 8.2:1 / Lc 92.
+   Green #4caf50 is artwork and fills only, never text (2.8:1 on white). */
+
+html[data-deck][data-theme] {
+  --brand-accent: #005288;
+  --accent: #005288;
+  --accent-hover: #003f69;
+  --accent-100: #e8f0f6;
+  --accent-200: #cfdeea;
+  --accent-text: #005288;
+  --accent-text-hover: #003a61;
+  --on-accent: #ffffff;
+  --surface-accent: #005288;
+  --focus-ring: #005288;
+  --focus-ring-on-accent: #ffffff;
+  --brand-green: #4caf50;
+  --brand-navy: #0b2a44;
+  /* Page ground #e4e4e4; secondary text darkened to neutral-700 for it (7.3:1, Lc 75). */
+  --surface: #e4e4e4;
+  --text-muted: var(--neutral-700);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --label-family: var(--font-sans);
+  --label-weight: 600;
+  --label-transform: none;
+  --label-tracking: 0;
+  --eyebrow-color: var(--text);
+  --deck-ok: #2e6b30;
+  --deck-ok-bg: #e7f2e7;
+  --deck-warn: #8a5a00;
+  --deck-warn-bg: #fbf1dc;
+  --deck-pad-x: clamp(1rem, 4.2vw, 5rem);
+  --deck-pad-y: clamp(1rem, 4vh, 3.5rem);
+  --deck-pad-b: clamp(0.5rem, 2.2vh, 1.5rem);
+  --deck-gap: clamp(1rem, 2.6vmin, 2.5rem);
+  --card-pad: clamp(1rem, 2.8vmin, 2.25rem);
+  --rule-heavy: 4px solid var(--text);
+  --deck-fs-xs: clamp(1rem, 1.75vmin, 1.375rem);
+  --deck-fs-sm: clamp(1.125rem, 2.15vmin, 1.75rem);
+  --deck-fs-md: clamp(1.25rem, 2.8vmin, 2.25rem);
+  --deck-fs-lg: clamp(1.5rem, 3.8vmin, 3rem);
+  --deck-fs-xl: clamp(2rem, 6.4vmin, 5.25rem);
+  --deck-fs-hero: clamp(2.5rem, 10vmin, 8rem);
+  --deck-fs-stat: clamp(2.25rem, 8vmin, 6.5rem);
+}
+
+html[data-deck],
+html[data-deck] body {
+  height: 100%;
+  overflow: hidden;
+}
+html[data-deck] body {
+  background: var(--surface);
+}
+
+.deck {
+  position: relative;
+  height: 100svh;
+}
+
+/* ------------------------------------------------------------ slide frame */
+.deck-slide {
+  position: absolute;
+  inset: 0 0 3.25rem;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(1.75rem, 6vh, 5rem);
+  padding: var(--deck-pad-y) var(--deck-pad-x) var(--deck-pad-b);
+  overflow: hidden;
+  container-type: inline-size;
+}
+.deck-slide.is-entering {
+  animation: deck-in 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes deck-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-slide.is-entering { animation: none; }
+}
+
+.deck-slide--accent {
+  background: var(--accent);
+  color: var(--on-accent);
+  --text: var(--on-accent);
+  --text-muted: #cfe0ee;
+  --eyebrow-color: var(--on-accent);
+  --border: rgba(255, 255, 255, 0.3);
+  --border-strong: rgba(255, 255, 255, 0.5);
+  --surface-raised: rgba(255, 255, 255, 0.09);
+  --surface-sunken: rgba(255, 255, 255, 0.07);
+  --accent-text: #ffffff;
+  --focus-ring: #ffffff;
+  --rule-heavy: 4px solid #ffffff;
+}
+
+/* Poster folio: slide number over the total, set flush right. Added by deck.ts. */
+.deck-folio {
+  position: absolute;
+  top: var(--deck-pad-y);
+  right: var(--deck-pad-x);
+  font-size: var(--deck-fs-md);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.deck-slide--art .deck-folio {
+  display: none;
+}
+
+.deck-head {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 80rem;
+  padding-right: 5rem;
+}
+.deck-head .tpl-eyebrow {
+  font-size: var(--deck-fs-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+.deck-title {
+  font-size: var(--deck-fs-xl);
+  font-weight: 750;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.deck-hero {
+  font-size: var(--deck-fs-hero);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.deck-lead {
+  font-size: var(--deck-fs-md);
+  line-height: 1.35;
+  color: var(--text-muted);
+  max-width: 58rem;
+  text-wrap: pretty;
+}
+.deck-body {
+  min-height: 0;
+  font-size: var(--deck-fs-sm);
+  line-height: 1.45;
+}
+.deck-center,
+.deck-grid.deck-center {
+  align-content: center;
+}
+
+/* ------------------------------------------------------------ layout */
+.deck-grid {
+  display: grid;
+  gap: var(--deck-gap);
+  align-content: start;
+  min-height: 0;
+}
+.deck-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.deck-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.deck-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.deck-grid--split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+.deck-grid--wide-right { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); }
+.deck-grid--quality { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1fr); }
+.deck-grid.deck-fill,
+.deck-grid.deck-grid--rows-fill {
+  align-content: stretch;
+}
+.deck-grid--rows-fill {
+  height: 100%;
+  grid-auto-rows: minmax(0, 1fr);
+}
+.deck-fill {
+  height: 100%;
+  min-height: 0;
+}
+.deck-rows {
+  display: grid;
+  gap: var(--deck-gap);
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.deck-rows--bottom {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.deck-stack {
+  display: grid;
+  gap: var(--deck-gap);
+  min-height: 0;
+  align-content: start;
+}
+.deck-stack--fill {
+  grid-auto-rows: minmax(0, 1fr);
+  align-content: stretch;
+}
+.deck-fill > *,
+.deck-rows > *,
+.deck-stack--fill > * {
+  min-height: 0;
+}
+.deck-span {
+  grid-column: 1 / -1;
+}
+.deck .deck-text {
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------ blocks: a heavy rule above, no box */
+.deck-card {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  min-height: 0;
+  padding: var(--card-pad);
+  background: var(--surface-raised);
+  border-top: var(--rule-heavy);
+}
+.deck-card h3 {
+  font-size: var(--deck-fs-md);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.deck-card p,
+.deck-card li {
+  color: var(--text-muted);
+}
+.deck-card--accent {
+  border-top-color: var(--accent);
+}
+.deck-slide--accent .deck-card--accent {
+  border-top-color: var(--brand-green);
+}
+.deck-list {
+  display: grid;
+  gap: 0.35em;
+  margin: 0;
+  padding-left: 1.1em;
+}
+.deck-card .deck-list {
+  align-content: start;
+}
+.deck-num.deck-num--sm {
+  font-size: clamp(1.5rem, 4.2vmin, 3.25rem);
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.deck-list li::marker {
+  color: var(--accent-text);
+}
+.deck-num {
+  font-size: var(--deck-fs-stat);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--accent-text);
+}
+.deck-delta {
+  font-size: var(--deck-fs-xs);
+  font-weight: 650;
+  color: var(--deck-ok);
+}
+.deck-src {
+  font-size: var(--deck-fs-xs);
+  color: var(--text-muted);
+}
+
+/* Template plates and tags at room scale. Values sit on the cell's foot so labels can wrap. */
+.deck .tpl-plate {
+  --plate-bg: transparent;
+  --plate-border: 0;
+  --plate-gap: var(--deck-gap);
+}
+.deck .tpl-plate__cell {
+  justify-content: space-between;
+  padding: 0.75rem 0 0;
+  background: transparent;
+  border-top: var(--rule-heavy);
+}
+.deck .tpl-plate__label {
+  font-size: var(--deck-fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.deck .tpl-plate__value {
+  font-size: var(--deck-fs-lg);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.deck .tpl-tag { font-size: var(--deck-fs-xs); }
+
+.deck-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  width: fit-content;
+  padding: 0.15em 0.6em;
+  font-size: var(--deck-fs-xs);
+  font-weight: 700;
+  background: var(--deck-warn-bg);
+  color: var(--deck-warn);
+}
+.deck-status--ok {
+  background: var(--deck-ok-bg);
+  color: var(--deck-ok);
+}
+.deck-status--plan {
+  background: var(--accent-100);
+  color: #005288;
+}
+
+/* Code and captured tool output. Comment and error colours lifted to Lc ≥ 60 on the dark field. */
+.deck-code,
+.deck-term {
+  min-height: 0;
+  margin: 0;
+  padding: var(--card-pad);
+  overflow: hidden;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  line-height: 1.45;
+  color: #e6edf3;
+  background: #0d1b26;
+  tab-size: 2;
+}
+.deck-code { font-size: var(--deck-fs-sm); }
+.deck-code--lg { font-size: var(--deck-fs-md); }
+.deck-term { font-size: var(--deck-fs-xs); white-space: pre; }
+.deck-term--lg { font-size: var(--deck-fs-sm); }
+.deck-code .c, .deck-term .c { color: #b9cad8; }
+.deck-code .k, .deck-term .k { color: #7cc4ff; }
+.deck-code .s, .deck-term .s { color: #a5d6a7; }
+.deck-code .ok, .deck-term .ok { color: #81c784; }
+.deck-code .bad, .deck-term .bad { color: #f7bcbc; }
+.deck-term .h { color: #ffffff; font-weight: 700; }
+.deck-code__label,
+.deck-term__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: var(--deck-fs-xs);
+  font-weight: 600;
+  white-space: normal;
+  color: #b9cad8;
+}
+
+/* Bar chart: categories by component count. */
+.deck-bars {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--deck-fs-md);
+}
+.deck-bars li {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr) 2em;
+  align-items: center;
+  gap: 1rem;
+}
+.deck-bars__track {
+  height: 1.05em;
+  background: var(--surface-sunken);
+}
+.deck-bars__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--v) / var(--max) * 100%);
+  background: var(--accent);
+}
+.deck-bars li:first-child .deck-bars__fill {
+  background: var(--brand-green);
+}
+.deck-bars__val {
+  font-weight: 800;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Flow: steps under a heavy rule, the gate on a blue field. */
+.deck-flow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--deck-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: flow;
+}
+.deck-flow li {
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+  padding: 0.6rem 0.75rem 0.75rem 0;
+  border-top: var(--rule-heavy);
+  counter-increment: flow;
+}
+.deck-flow li::before {
+  content: counter(flow);
+  font-size: var(--deck-fs-sm);
+  font-weight: 800;
+  color: var(--accent-text);
+}
+.deck-flow strong {
+  font-size: var(--deck-fs-sm);
+  line-height: 1.2;
+}
+.deck-flow span {
+  font-size: var(--deck-fs-xs);
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+.deck-flow .is-gate {
+  padding-left: 0.75rem;
+  background: var(--accent);
+  border-top-color: var(--accent);
+  color: #ffffff;
+}
+.deck-flow .is-gate::before,
+.deck-flow .is-gate span {
+  color: #ffffff;
+}
+.deck-flow .is-gate code {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Timeline of releases. */
+.deck-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.deck-timeline li {
+  display: grid;
+  gap: 0.1rem;
+  padding-top: 0.5rem;
+  border-top: 4px solid var(--accent);
+}
+.deck-timeline time {
+  font-size: var(--deck-fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.deck-timeline strong {
+  font-size: var(--deck-fs-sm);
+  line-height: 1.2;
+}
+.deck-timeline span {
+  font-size: var(--deck-fs-xs);
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------ pictures: flat, square, captioned */
+.deck-figure {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.45rem;
+  min-height: 0;
+  margin: 0;
+}
+.deck-figure__frame {
+  min-height: 0;
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+.deck-figure__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+.deck-figure--natural {
+  grid-template-rows: auto auto;
+  align-content: start;
+}
+.deck-figure--natural .deck-figure__frame img {
+  height: auto;
+}
+/* A small component shown at its own size on a tinted stage, centred vertically. */
+.deck-figure--stage .deck-figure__frame {
+  display: grid;
+  align-content: center;
+  padding: clamp(1rem, 4vmin, 3rem);
+  background: var(--accent-100);
+}
+.deck-figure--stage .deck-figure__frame img {
+  height: auto;
+}
+.deck-card--lg h3 {
+  font-size: var(--deck-fs-lg);
+}
+.deck-card--lg p,
+.deck-card--lg .deck-list {
+  font-size: var(--deck-fs-md);
+  line-height: 1.3;
+}
+.deck-card--lg .deck-src {
+  font-size: var(--deck-fs-sm);
+}
+.deck-card--chart .deck-bars {
+  gap: 0.45rem;
+  font-size: var(--deck-fs-sm);
+}
+.deck-card--chart h3 {
+  font-size: var(--deck-fs-lg);
+  letter-spacing: -0.025em;
+}
+.deck-figure figcaption {
+  font-size: var(--deck-fs-xs);
+  color: var(--text-muted);
+}
+
+/* Bleeds: the picture runs off the right and bottom edges of the slide. */
+.deck-bleed-rb {
+  margin-right: calc(-1 * var(--deck-pad-x));
+  margin-bottom: calc(-1 * var(--deck-pad-b));
+}
+.deck-bleed-rb .deck-figure__frame img {
+  object-position: left 58%;
+}
+.deck-figure--center .deck-figure__frame img {
+  object-position: center;
+}
+/* Wide screenshot shown whole, letterboxed on its own page colour. */
+.deck-figure__frame--whole {
+  background: #f6f6f6;
+}
+.deck-figure__frame--whole img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* A component shown whole: scaled down to fit its frame, centred on a white stage. */
+.deck-figure--fit .deck-figure__frame {
+  position: relative;
+  background: #ffffff;
+}
+.deck-figure--fit .deck-figure__frame img {
+  position: absolute;
+  top: clamp(0.75rem, 2.5vmin, 2rem);
+  left: clamp(0.75rem, 2.5vmin, 2rem);
+  width: calc(100% - 2 * clamp(0.75rem, 2.5vmin, 2rem));
+  height: calc(100% - 2 * clamp(0.75rem, 2.5vmin, 2rem));
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Resource cards: room under the title and between links. */
+.deck-card--links {
+  gap: 1.5rem;
+}
+.deck-card--links .deck-links {
+  gap: 1.1rem;
+}
+
+/* Full-height artwork panel on the right, off the top, right and bottom edges. */
+.deck-slide--art {
+  padding-right: calc(var(--art-w, 40%) + var(--deck-pad-x));
+}
+.deck-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--art-w, 40%);
+  margin: 0;
+  overflow: hidden;
+}
+.deck-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Cards whose artwork sits flush on the bottom edge of the slide. */
+.deck-slide--bleed-b {
+  padding-bottom: 0;
+}
+.deck-card--art {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  padding-bottom: 0;
+}
+.deck-card__art {
+  align-self: end;
+  height: clamp(7rem, 25vh, 17rem);
+  margin: var(--deck-gap) calc(-1 * var(--card-pad)) 0;
+  overflow: hidden;
+}
+.deck-card__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+/* Agenda: six blocks, each with a picture. */
+.deck-agenda {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: clamp(1.75rem, 3vw, 4rem);
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.deck-agenda > li {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 0.3rem;
+  min-height: 0;
+  padding-top: 0.6rem;
+  border-top: var(--rule-heavy);
+}
+.deck-agenda > li.is-gate {
+  border-top-color: var(--accent);
+}
+.deck-agenda h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: var(--deck-fs-md);
+  font-weight: 750;
+  letter-spacing: -0.015em;
+}
+.deck-agenda h3 span {
+  font-size: var(--deck-fs-sm);
+  font-weight: 600;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+.deck-agenda p {
+  font-size: var(--deck-fs-xs);
+  color: var(--text-muted);
+}
+.deck-agenda .deck-figure__frame,
+.deck-agenda .deck-term {
+  height: 100%;
+  margin-top: 0.4rem;
+}
+
+/* Cover copy: hero, lead, plate. */
+.deck-cover {
+  gap: clamp(1rem, 4vh, 3rem);
+}
+.deck-cover__plate {
+  --plate-cols: 4;
+}
+
+/* Resource links (Q&A). */
+.deck-links {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--deck-fs-sm);
+  gap: 0.6rem;
+}
+.deck-links a {
+  color: var(--text);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.deck-links a:hover {
+  text-decoration-color: var(--brand-green);
+}
+
+/* Media placeholder for screenshots the presenter adds. */
+.deck .tpl-slot {
+  min-height: 10rem;
+  font-size: var(--deck-fs-xs);
+  border-radius: 0;
+}
+.deck .tpl-slot code {
+  font-size: 0.95em;
+}
+.deck .tpl-slot__label,
+.deck .tpl-slot__brief {
+  font-size: var(--deck-fs-xs);
+}
+
+/* Demo cue: the "switch windows now" slide. */
+.deck-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  padding: 0.35rem 0.9rem;
+  font-size: var(--deck-fs-sm);
+  font-weight: 750;
+  background: var(--on-accent);
+  color: #005288;
+}
+.deck-checklist {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.deck-checklist li {
+  display: grid;
+  grid-template-columns: 1.8em minmax(0, 1fr);
+  gap: 0.5rem;
+  counter-increment: step;
+}
+.deck-checklist li::before {
+  content: counter(step);
+  font-weight: 800;
+  color: var(--brand-green);
+}
+.deck-slide--accent .deck-checklist li::before {
+  color: #ffffff;
+}
+.deck-checklist code,
+.deck-card code,
+.deck-body p code {
+  padding: 0.05em 0.3em;
+  font-size: 0.88em;
+  background: var(--surface-sunken);
+}
+.deck-slide--accent code {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ------------------------------------------------------------ speaker notes
+   Authored inside each slide, shown in one fixed panel outside the slides
+   (slides are containers, so a fixed child would be clipped to them). */
+.deck-notes {
+  display: none;
+}
+.deck.is-notes .deck-slide {
+  bottom: 34vh;
+}
+.deck-notes-panel {
+  position: fixed;
+  inset: auto 0 3.25rem;
+  z-index: 3;
+  height: calc(34vh - 3.25rem);
+  overflow: auto;
+  padding: 1rem var(--deck-pad-x);
+  font-size: var(--deck-fs-sm);
+  line-height: 1.5;
+  color: #f1f5f9;
+  background: #10202e;
+  border-top: 4px solid var(--brand-green);
+}
+.deck-notes-panel p + p,
+.deck-notes-panel ul {
+  margin-top: 0.5em;
+}
+.deck-notes-panel ul {
+  padding-left: 1.2em;
+}
+.deck-notes-panel code {
+  color: #cfe0ee;
+}
+
+/* ------------------------------------------------------------ chrome */
+.deck-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 3.25rem;
+  padding: 0 var(--deck-pad-x);
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  background: var(--surface-raised);
+}
+.deck-bar__section {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 650;
+  color: var(--text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.deck-bar__clock {
+  font-variant-numeric: tabular-nums;
+}
+.deck-bar__clock.is-behind {
+  color: #b02b27;
+  font-weight: 700;
+}
+.deck-bar__count {
+  font-variant-numeric: tabular-nums;
+}
+.deck-bar button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.6rem;
+  font-size: 0.9375rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  touch-action: manipulation;
+}
+.deck-bar button:hover {
+  background: var(--surface-hover);
+}
+.deck-bar button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.deck-bar button:disabled {
+  opacity: 0.45;
+}
+.deck-bar svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.deck-progress {
+  position: fixed;
+  inset: auto 0 3.25rem;
+  z-index: 4;
+  height: 4px;
+}
+.deck-progress__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--p, 0) * 100%);
+  background: var(--brand-green);
+  transition: width 240ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-progress__fill { transition: none; }
+}
+.deck-bar__hint kbd {
+  padding: 0 0.3em;
+  font-family: inherit;
+  border: 1px solid var(--border-strong);
+}
+
+/* ------------------------------------------------------------ narrow screens */
+@container (max-width: 760px) {
+  .deck-grid--2,
+  .deck-grid--3,
+  .deck-grid--4,
+  .deck-grid--split,
+  .deck-grid--wide-right,
+  .deck-agenda { grid-template-columns: minmax(0, 1fr); }
+  .deck-fill,
+  .deck-rows,
+  .deck-agenda,
+  .deck-grid--rows-fill { height: auto; grid-auto-rows: auto; }
+  .deck-flow { grid-auto-flow: row; }
+  .deck-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .deck-figure__frame,
+  .deck-agenda .deck-figure__frame { height: 14rem; }
+  .deck-cover__plate { --plate-cols: 2; }
+  .deck-head { padding-right: 3rem; }
+}
+@media (max-width: 760px) {
+  .deck-slide { overflow: auto; }
+  .deck-slide--art { padding-right: var(--deck-pad-x); }
+  .deck-art { position: relative; width: auto; height: 16rem; margin: 0 calc(-1 * var(--deck-pad-x)); }
+  .deck-bleed-rb { margin-bottom: 0; }
+  .deck-bar__clock,
+  .deck-bar__hint { display: none; }
+}
+
+:fullscreen .deck-bar {
+  inset: auto 0 0;
+  width: auto;
+  height: 3.25rem;
+  padding: 0 var(--deck-pad-x);
+  background: var(--surface-raised);
+}
+:fullscreen .deck-bar__hint,
+:fullscreen .deck-bar [data-deck-notes] { display: none; }
+:fullscreen .deck-progress { inset: 0 0 auto; }
+
+@media print {
+  html[data-deck],
+  html[data-deck] body { height: auto; overflow: visible; }
+  .deck { height: auto; }
+  .deck-slide,
+  .deck-slide[hidden] { position: relative; display: grid !important; inset: auto; min-height: 100vh; break-after: page; overflow: visible; }
+  .deck-bar,
+  .deck-progress { display: none; }
+}
